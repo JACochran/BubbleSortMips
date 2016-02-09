@@ -43,16 +43,16 @@ prompt: la   $a0, promptList    #ask for list of integers
 	j prompt
 
 printIntegers:
+	
 	add   $t0, $zero, $zero  #set index to 0
-	add   $t1, $s2, $zero    #store pointer to start of array address
-loopbdy:lw    $t0, ($t1)
-        li    $v0, 1
-        add   $a0, $t0, $zero  # load desired value into argument register $a0, using pseudo-op
-    	syscall
-        move  $s2, $t0
-        addi  $t1, $t1, 4
-        addi  $t0, $t0, 1
-        bne   $t0, $s0, loopbdy
+	add   $t1, $s2, $zero    #array pointer at $t1
+loopbdy:lw    $t2, ($t1)
+	li    $v0, 1
+        add   $a0, $t2, $zero   # load desired value into argument register $a0, using pseudo-op
+    	syscall			# print integer
+        addi  $t1, $t1, 4       #increment pointer to array
+        addi  $t0, $t0, 1       # increment index
+        bne   $t0, $s0, loopbdy # loop if index != number of integers in array
         j     Out                    
 Out: jr $ra
 exit:
