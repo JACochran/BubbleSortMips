@@ -19,7 +19,7 @@ main:
       add $s0, $v0, $zero   # transfer the number to the desired register  
       #prompt for each integer
       jal getIntegers
-      add $a1, $s2, $zero    #move array to argument 1
+      add $a0, $s2, $zero    #move array to argument 1
       jal printIntegers
       j   exit
       
@@ -51,7 +51,7 @@ prompt: la   $a0, promptList    #ask for list of integers
 ################################################################################################################   
 printIntegers:
 	add   $t0, $zero, $zero  #set index to 0
-	add   $t1, $a1, $zero    #array pointer at $t1
+	add   $t1, $a0, $zero    #array pointer at $t1
 loopbdy:lw    $t2, ($t1)         # loads the integer into $t2
 	li    $v0, 1		 # asks for print service
         add   $a0, $t2, $zero    # load desired value into argument register $a0, using pseudo-op
