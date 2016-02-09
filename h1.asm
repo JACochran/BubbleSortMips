@@ -18,6 +18,7 @@ main:
       add $s0, $v0, $zero   # transfer the number to the desired register  
       #prompt for each integer
       jal getIntegers
+      jal printIntegers
       j   exit
       
 ################################################################################################################
@@ -28,17 +29,30 @@ main:
 ################################################################################################################   
 getIntegers:  
 	la   $s2, list          # $s2 = array address
-        add  $t0,$zero, $zero   # Set index i = 0 ($t0)
+        add  $t0, $zero, $zero  # Set index i = 0 ($t0)
+        add  $t1, $s2, $zero    # temp place holder for array address
 prompt: la   $a0, promptList    #ask for list of integers
         li   $v0, 4             # load string to print
         syscall
         li   $v0, 5             #read integer service 5 is to read integers
         syscall
-        sw   $v0, ($s2)	        #store value
-        addi $s2, $s2, 4        #step to next array cell
+        sw   $v0, ($t1)	        #store value
+        addi $t1, $t1, 4        #step to next array cell
         addi $t0, $t0, 1        #increase index i
 	beq  $t0, $s0, Out      #break from loop if we got all the numbers requested
 	j prompt
-                            
+
+printIntegers:
+	add   $t0, $zero, $zero  #set index to 0
+	add   $t1, $s2, $zero    #store pointer to start of array address
+loopbdy:lw    $t0, ($t1)
+        li    $v0, 1
+        add   $a0, $t0, $zero  # load desired value into argument register $a0, using pseudo-op
+    	syscall
+        move  $s2, $t0
+        addi  $t1, $t1, 4
+        addi  $t0, $t0, 1
+        bne   $t0, $s0, loopbdy
+        j     Out                    
 Out: jr $ra
 exit:
