@@ -7,24 +7,35 @@ promptN: .asciiz "Enter the number of integers you want to sort \n"
 promptList: .asciiz "Enter the next integer: \n"
 maxSize: .word 250
 space: .asciiz " "
-
+originalListPrompt: .asciiz "The Orignal List: "
+sortedListPrompt:   .asciiz "The Sorted List: "
 .text
 # Prompt user to input  the number of Integers in list 
 main: 
+      jal getSize 
+      #prompt for each integer
+      jal getIntegers
+      jal sortIntegers
+      jal printSortedList
+      jal printOriginalList
+      j   exit
+
+################################################################################################################
+#####   Procedure: Get array size
+#####   Info:      prompts the user to input a size of the integer array
+#####   this value will be stored in $s0
+################################################################################################################   
+getSize: 
       la   $a0, promptN     # load address of prompt for syscall
       li   $v0, 4           # specify Print String service
       syscall               # print the prompt string
       li   $v0, 5           # specify Read Integer service, 5 is to read integers
       syscall               # Read the number. After this instruction, the number read is in $v0.
-      add $s0, $v0, $zero   # transfer the number to the desired register  
-      #prompt for each integer
-      jal getIntegers
-      add $a0, $s2, $zero    #move array to argument 1
-      jal printIntegers
-      j   exit
-      
+      add $s0, $v0, $zero   # transfer the number to the desired register 
+      j Out
+
 ################################################################################################################
-#####   Procedure: Loop Integer
+#####   Procedure: get Integers
 #####   Info:      Loops through 1 - number of integers the user specified
 #####   to store (located in $s0) and asks for an integer.  Which will be stored
 #####   into the array ($s2)
@@ -62,7 +73,40 @@ loopbdy:lw    $t2, ($t1)         # loads the integer into $t2
         addi  $t1, $t1, 4        #increment pointer to array
         addi  $t0, $t0, 1        # increment index
         bne   $t0, $s0, loopbdy  # loop if index != number of integers in array
-        j     Out                    
-        
+        j     Out      
+################################################################################################################
+#####   Procedure: Sort array
+#####   Info:      Will use bubble sort to sort the array in $a0 with a size stored in $s0. 
+#####   the sorted array will be saved in $s1
+################################################################################################################                     
+sortIntegers:
+	      la $s1, list           #sorted array = $s1
+	      add $t0, $zero, $zero  #set index to   
+     loop:    			     #sorting here	
+     	      add $t0, $t0, 1        #increment index
+	      bne $t0, $s0, loop     #if index = size stop!
+	      j Out
+################################################################################################################
+#####   Procedure: print sorted list
+#####   Info:      prints the sorted list in $s1
+################################################################################################################                     
+printSortedList:
+		la    $a0, sortedListPrompt      #load a prompt as an argument for printing
+		li    $v0, 4                     # ask for print service
+		syscall                          # prints a "The Sorted List: "
+		add $a0, $s1, $zero		 # loads the sorted array to print
+		j    printIntegers		 # prints array
+		      
+################################################################################################################
+#####   Procedure: print original list
+#####   Info:      prints the unsorted list in $s2 (in the order user gave us)
+################################################################################################################                     
+printOriginalList:
+    		la    $a0, originalListPrompt    # load a prompt as an argument for printing
+		li    $v0, 4                     # ask for print service
+		syscall                          # prints a "The Original List: "
+		add $a0, $s2, $zero		 # loads the original array as argument to print
+		j   printIntegers		 # prints array 
+      
 Out: jr $ra
 exit:
