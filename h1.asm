@@ -7,8 +7,9 @@ promptN: .asciiz "Enter the number of integers you want to sort \n"
 promptList: .asciiz "Enter the next integer: \n"
 maxSize: .word 250
 space: .asciiz " "
-originalListPrompt: .asciiz "The Orignal List: "
-sortedListPrompt:   .asciiz "The Sorted List: "
+originalListPrompt: .asciiz "\nThe Orignal List: "
+sortedListPrompt:   .asciiz "\nThe Sorted List: "
+switchesPrompt:  .asciiz "\nNumber of Switches: "
 .text
 # Prompt user to input  the number of Integers in list 
 main: 
@@ -16,8 +17,9 @@ main:
       #prompt for each integer
       jal getIntegers
       jal sortIntegers
-      jal printSortedList
       jal printOriginalList
+      jal printSortedList
+      jal printNumberOfSwitches
       j   exit
 
 ################################################################################################################
@@ -107,6 +109,17 @@ printOriginalList:
 		syscall                          # prints a "The Original List: "
 		add $a0, $s2, $zero		 # loads the original array as argument to print
 		j   printIntegers		 # prints array 
-      
+################################################################################################################
+#####   Procedure: print the number of switches occurred during sorting
+#####   Info:      prints the number of times a switch occurred
+################################################################################################################                     
+printNumberOfSwitches: 
+                     la $a0, switchesPrompt      # loads switches prompt to arguement
+                     li $v0, 4			 # asks for print service
+                     syscall			 # prints
+                     add $a0, $s3, $zero	 # moves the number of switches as an argument
+                     li    $v0, 1		 # asks for print service
+                     syscall			 # prints
+      		     j Out
 Out: jr $ra
 exit:
