@@ -6,6 +6,7 @@ list: .space 1000 # resevers a block of 1000 bytes, hold up to 250 int values
 promptN: .asciiz "Enter the number of integers you want to sort \n"
 promptList: .asciiz "Enter the next integer: \n"
 maxSize: .word 250
+space: .asciiz " "
 
 .text
 # Prompt user to input  the number of Integers in list 
@@ -42,18 +43,26 @@ prompt: la   $a0, promptList    #ask for list of integers
         addi $t0, $t0, 1        #increase index i
 	beq  $t0, $s0, Out      #break from loop if we got all the numbers requested
 	j prompt
-
-printIntegers:
 	
+################################################################################################################
+#####   Procedure: Print Integers
+#####   Info:      Loops through 1 - number of integers the user specified
+#####   to store (located in $s0) and prints the values of the array located in $a0
+################################################################################################################   
+printIntegers:
 	add   $t0, $zero, $zero  #set index to 0
 	add   $t1, $a1, $zero    #array pointer at $t1
-loopbdy:lw    $t2, ($t1)
-	li    $v0, 1
-        add   $a0, $t2, $zero   # load desired value into argument register $a0, using pseudo-op
-    	syscall			# print integer
-        addi  $t1, $t1, 4       #increment pointer to array
-        addi  $t0, $t0, 1       # increment index
-        bne   $t0, $s0, loopbdy # loop if index != number of integers in array
+loopbdy:lw    $t2, ($t1)         # loads the integer into $t2
+	li    $v0, 1		 # asks for print service
+        add   $a0, $t2, $zero    # load desired value into argument register $a0, using pseudo-op
+    	syscall			 # print integer
+    	la    $a0, space         # load a space as an argument for printing
+	li    $v0, 4             # ask for print service
+	syscall                  # prints a space   	
+        addi  $t1, $t1, 4        #increment pointer to array
+        addi  $t0, $t0, 1        # increment index
+        bne   $t0, $s0, loopbdy  # loop if index != number of integers in array
         j     Out                    
+        
 Out: jr $ra
 exit:
