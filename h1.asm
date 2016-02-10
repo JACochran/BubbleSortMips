@@ -74,7 +74,7 @@ loopbdy:lw    $t2, ($t1)         # loads the integer into $t2
 	syscall                  # prints a space   	
         addi  $t1, $t1, 4        #increment pointer to array
         addi  $t0, $t0, 1        # increment index
-        bne   $t0, $s0, loopbdy  # loop if index != number of integers in array
+        bne   $t0, $s0, loopbdy  # loop if index < number of integers in array
         j     Out      
 ################################################################################################################
 #####   Procedure: Sort array
