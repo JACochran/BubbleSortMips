@@ -16,8 +16,8 @@ main:
       jal getSize 
       #prompt for each integer
       jal getIntegers
-      jal sortIntegers
       jal printOriginalList
+      jal sortIntegers
       jal printSortedList
       jal printNumberOfSwitches
       j   exit
@@ -80,14 +80,45 @@ loopbdy:lw    $t2, ($t1)         # loads the integer into $t2
 #####   Procedure: Sort array
 #####   Info:      Will use bubble sort to sort the array in $a0 with a size stored in $s0. 
 #####   the sorted array will be saved in $s1
+#####   $s3 will hold number of switches
 ################################################################################################################                     
 sortIntegers:
 	      la $s1, list           #sorted array = $s1
-	      add $t0, $zero, $zero  #set index to   
-     loop:    			     #sorting here	
-     	      add $t0, $t0, 1        #increment index
-	      bne $t0, $s0, loop     #if index = size stop!
+              add $t0, $zero, $zero  #set index i to 0
+    loop:
+    
+    innerloop:
+    	      add $t1, $t1, $zero    #set j index to 0   
+       	      
+       	      sll $t3, $t1, 2	     # getting offset from start array  to index j
+       	      add $t4, $s2, $t3	     # adding offset to array start
+       	      			     # t4 has address of A[j]
+       	      lw $t5, 0($t4)	     # t5 holds the value of A[j] 
+       	      lw $t6, 4($t4)        # t6 holds the value of A[j+1]
+       	      			     # get difference of A[j+1]- A[j]
+       	      sgt $t7, $t5, $t6      # IF A[j]> A[j+1]  if t7 is true swap, else t7=0 keep looping
+       	      bne $zero,$t7,inc
+       	      add $t8, $t5, $zero      #temp in t8=t5 copying value
+       	      sw  $t5, 4($t4)        # copy value from 
+       	      sw  $t6, 0($t4) 
+       	       			        # Swap
+       	       # if t8 is false then skip swapping      
+    inc:        	       	     
+       	      add $t1, $t1, 1	      #increment j
+       	      bne $t1, $s0, innerloop # if j = count
+     	      add $t0, $t0, 1         #increment index i
+	      bne $t0, $s0, loop      #if index = size stop!
 	      j Out
+	      ##j will be in t
+	     
+	      ##  t2 will hold temp
+	     
+	     
+	      
+	      
+	      
+	      
+	      
 ################################################################################################################
 #####   Procedure: print sorted list
 #####   Info:      prints the sorted list in $s1
@@ -96,7 +127,7 @@ printSortedList:
 		la    $a0, sortedListPrompt      #load a prompt as an argument for printing
 		li    $v0, 4                     # ask for print service
 		syscall                          # prints a "The Sorted List: "
-		add $a0, $s1, $zero		 # loads the sorted array to print
+		add $a0, $s2, $zero		 # loads the sorted array to print
 		j    printIntegers		 # prints array
 		      
 ################################################################################################################
