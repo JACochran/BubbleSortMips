@@ -81,44 +81,53 @@ loopbdy:lw    $t2, ($t1)         # loads the integer into $t2
 #####   Info:      Will use bubble sort to sort the array in $a0 with a size stored in $s0. 
 #####   the sorted array will be saved in $s1
 #####   $s3 will hold number of switches
+#####  Registers labels
+##### s0 holds number of ints in array
+##### s2 holds address of initial value of array
+##### t0 counter for OutterLoop_loop
+##### t1 counter for innerLoop
+##### t2 will hold n-1  |  s0-1 is needed for outer loop
+##### t3 is needed for outer loop
+##### t4 holds value of n - c - 1      
+##### t5 A[d]
+##### t6 A[d+1]
 ################################################################################################################                     
+
 sortIntegers:
-	      la $s1, list           #sorted array = $s1
-              add $t0, $zero, $zero  #set index i to 0
-    loop:
-    
-    innerloop:
-    	      add $t1, $t1, $zero    #set j index to 0   
-       	      
-       	      sll $t3, $t1, 2	     # getting offset from start array  to index j
-       	      add $t4, $s2, $t3	     # adding offset to array start
-       	      			     # t4 has address of A[j]
-       	      lw $t5, 0($t4)	     # t5 holds the value of A[j] 
-       	      lw $t6, 4($t4)        # t6 holds the value of A[j+1]
-       	      			     # get difference of A[j+1]- A[j]
-       	      sgt $t7, $t5, $t6      # IF A[j]> A[j+1]  if t7 is true swap, else t7=0 keep looping
-       	      bne $zero,$t7,inc
-       	      add $t8, $t5, $zero      #temp in t8=t5 copying value
-       	      sw  $t5, 4($t4)        # copy value from 
-       	      sw  $t6, 0($t4) 
-       	       			        # Swap
-       	       # if t8 is false then skip swapping      
-    inc:        	       	     
-       	      add $t1, $t1, 1	      #increment j
-       	      bne $t1, $s0, innerloop # if j = count
-     	      add $t0, $t0, 1         #increment index i
-	      bne $t0, $s0, loop      #if index = size stop!
-	      j Out
-	      ##j will be in t
-	     
-	      ##  t2 will hold temp
-	     
-	     
-	      
-	      
-	      
-	      
-	      
+			li $t0, 0             		 #t0 counter for outer loop initialized to zero
+	OutterLoop:
+			li $t1, 0   	     	# Initialize ****t1 counter for outer loop
+			add $t2, $zero, $zero	#
+			li $t2, -1 	 
+			add $t2, $s0, $t2	   # n-1= t2
+			slt $t7, $t0, $t2    	# check whether t1   < n-1
+			beq $t7, $zero Out  	# if true jump out of loop
+	innerLoop:
+		
+			sub $t4, $t2, $t0  # t4= n - c - 1
+			slt $t3, $t1, $t4       ## check whether counter of innerLoop loop  < n-1-c
+			beq $t3, $zero, incT1ctr  ## if true jump out of innerLoop loop to to outer
+		
+			### load values to registers
+			addi $s3, $s3, 1
+			sll $t3, $t1, 2 
+			add $t3, $t3, $s2
+			lw $t5, 0($t3)  	# $t2 <- A[j]
+			lw $t6, 4($t3)     # $t3 <- A[j+1]
+			bgt $t6, $t5, no_swap # A[j] <= A[j-1]?
+		
+						### Precondition: 
+			sw $t6, 0($t3) 	 	# A[j-1] <- $t2  \ move bubble
+			sw $t5, 4($t3) 		# A[j] <- $t3    / $t2 upwards
+						###Post-Cond: swapping occurs
+	no_swap:
+			add $t1, $t1, 1		
+			j innerLoop	
+	incT1ctr:
+			add $t0, $t0, 1
+			beq $t3, $zero,OutterLoop
+			j Out
+	        
 ################################################################################################################
 #####   Procedure: print sorted list
 #####   Info:      prints the sorted list in $s1
