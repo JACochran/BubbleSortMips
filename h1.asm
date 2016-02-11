@@ -94,32 +94,32 @@ loopbdy:lw    $t2, ($t1)         # loads the integer into $t2
 ################################################################################################################                     
 
 sortIntegers:
-			li $t0, 0             		 #t0 counter for outer loop initialized to zero
+			li $t0, 0                 #t0 counter for outer loop initialized to zero
 	OutterLoop:
-			li $t1, 0   	     	# Initialize ****t1 counter for outer loop
-			add $t2, $zero, $zero	#
-			li $t2, -1 	 
-			add $t2, $s0, $t2	   # n-1= t2
-			slt $t7, $t0, $t2    	# check whether t1   < n-1
-			beq $t7, $zero Out  	# if true jump out of loop
+			li  $t1, 0   	          # Initialize ****t1 counter for outer loop
+			add $t2, $zero, $zero	  #
+			li  $t2, -1 	 
+			add $t2, $s0, $t2         # n-1= t2
+			slt $t7, $t0, $t2         # check whether t1   < n-1
+			beq $t7, $zero Out  	  # if true jump out of loop
 	innerLoop:
 		
-			sub $t4, $t2, $t0  # t4= n - c - 1
-			slt $t3, $t1, $t4       ## check whether counter of innerLoop loop  < n-1-c
+			sub $t4, $t2, $t0         # t4= n - c - 1
+			slt $t3, $t1, $t4         ## check whether counter of innerLoop loop  < n-1-c
 			beq $t3, $zero, incT1ctr  ## if true jump out of innerLoop loop to to outer
 		
 			### load values to registers
 		
 			sll $t3, $t1, 2 
 			add $t3, $t3, $s2
-			lw $t5, 0($t3)  	# $t2 <- A[j]
-			lw $t6, 4($t3)     # $t3 <- A[j+1]
-			bgt $t6, $t5, no_swap # A[j] <= A[j-1]?
-						### Precondition: 
-			addi $s3, $s3, 1	# Update s3, Number of Swaps
-			sw $t6, 0($t3) 	 	# A[j-1] <- $t2  \ move bubble
-			sw $t5, 4($t3) 		# A[j] <- $t3    / $t2 upwards
-						###Post-Cond: swapping occurs
+			lw $t5, 0($t3)  	 # $t2 <- A[j]
+			lw $t6, 4($t3)           # $t3 <- A[j+1]
+			bgt $t6, $t5, no_swap    # A[j] <= A[j-1]?
+						 ### Precondition: 
+			addi $s3, $s3, 1	 # Update s3, Number of Swaps
+			sw $t6, 0($t3) 	 	 # A[j-1] <- $t2  \ move bubble
+			sw $t5, 4($t3) 		 # A[j] <- $t3    / $t2 upwards
+						 ###Post-Cond: swapping occurs
 	no_swap:
 			add $t1, $t1, 1		
 			j innerLoop	
