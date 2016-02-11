@@ -109,13 +109,13 @@ sortIntegers:
 			beq $t3, $zero, incT1ctr  ## if true jump out of innerLoop loop to to outer
 		
 			### load values to registers
-			addi $s3, $s3, 1
+		
 			sll $t3, $t1, 2 
 			add $t3, $t3, $s2
 			lw $t5, 0($t3)  	# $t2 <- A[j]
 			lw $t6, 4($t3)     # $t3 <- A[j+1]
 			bgt $t6, $t5, no_swap # A[j] <= A[j-1]?
-		
+			addi $s3, $s3, 1
 						### Precondition: 
 			sw $t6, 0($t3) 	 	# A[j-1] <- $t2  \ move bubble
 			sw $t5, 4($t3) 		# A[j] <- $t3    / $t2 upwards
