@@ -115,8 +115,8 @@ sortIntegers:
 			lw $t5, 0($t3)  	# $t2 <- A[j]
 			lw $t6, 4($t3)     # $t3 <- A[j+1]
 			bgt $t6, $t5, no_swap # A[j] <= A[j-1]?
-			addi $s3, $s3, 1
 						### Precondition: 
+			addi $s3, $s3, 1	# Update s3, Number of Swaps
 			sw $t6, 0($t3) 	 	# A[j-1] <- $t2  \ move bubble
 			sw $t5, 4($t3) 		# A[j] <- $t3    / $t2 upwards
 						###Post-Cond: swapping occurs
