@@ -1,6 +1,6 @@
 ################################################################################################################ 
 ################################################################################################################
-#####   HW #1 CS465 Jennifer L & Renzo Tejada
+#####   HW #1 CS465 Jenifer Cochran & Renzo Tejada
 #####   Due Datte 						02/12/2016  
 #####   Description: Program requests the value of N as input and then reads the numbers to be sorted individually
 #####	Then, the program should prints "The original list is: .." followed by the list elements before sorting. Then, 
