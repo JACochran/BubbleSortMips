@@ -1,7 +1,7 @@
 ################################################################################################################ 
 ################################################################################################################
-#####   HW #1 CS465 Jennifer L & Renzo Tejada
-#####   Due Datte 						02/12/2016  
+#####   HW #1 CS465 Jenifer Cochran & Renzo Tejada
+#####   Due Date 						02/12/2016  
 #####   Description: Program requests the value of N as input and then reads the numbers to be sorted individually
 #####	Then, the program should prints "The original list is: .." followed by the list elements before sorting. Then, 
 #####	buble sort is applied to the list and  the program prints "The sorted list is: " followed by the elements of 
